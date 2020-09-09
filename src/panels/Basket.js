@@ -138,6 +138,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
               }
             }}
           />
+          {isValidTime(time) || faster ? null : <label className="time-hint">(Время должно быть в формате HH:MM, напр. 11:41)</label>}
         </div>
         <div className="Place__choice-item">
           <h3>С собой</h3>

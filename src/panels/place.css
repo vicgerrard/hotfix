@@ -314,3 +314,8 @@
   background-color: red;
   opacity: 0.5;
 }
+
+.time-hint {
+  color: grey;
+  font-size: 12px;
+}
