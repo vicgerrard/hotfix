@@ -26,7 +26,14 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
     return accounting.formatNumber(result, 0, ' ');
   }, [ order, item ]);
 
-  return (
+    // Solution for brutal button.click() autotest
+    function placeOrder(e) {
+        if (!Object.values(order).length) {
+          e.preventDefault();
+        }
+    }
+
+    return (
     <div className="Place">
       <header className="Place__header">
         <aside className="Place__trz">
@@ -101,7 +108,7 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
         )))}
       </ul>
       <footer className="Place__footer">
-        <Link to={`/basket/${area.id}/${item.id}`} className={Object.values(order).length ? "Place__order" : "Place__order disable-link"}>
+        <Link to={`/basket/${area.id}/${item.id}`} className={Object.values(order).length ? "Place__order" : "Place__order disable-link"} onClick={placeOrder}>
           Оформить заказ ({price})
         </Link>
       </footer>
