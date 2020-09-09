@@ -6,7 +6,7 @@ import Checkbox from './Checkbox';
 
 import edit from '../img/edit.svg';
 import './place.css';
-import {isValid} from "../utils/isValid";
+import {isValidTime} from "../utils/isValidTime";
 
 
 const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
@@ -123,7 +123,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
         <div className="Place__choice-item">
           <span>Назначить</span>
           <input
-            className={isValid(time) || faster ? undefined : 'invalid-time'}
+            className={isValidTime(time) || faster ? undefined : 'invalid-time'}
             value={time}
             onFocus={() => {
               setFaster(false);
@@ -148,7 +148,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order }) => {
           <Checkbox checked={!selfService} onToggle={() => setSelfService(!setSelfService)} />
         </div>
       </div>
-      <footer className={isValid(time) || faster ? "Place__footer" : "Place__footer disable-link"}>
+      <footer className={isValidTime(time) || faster ? "Place__footer" : "Place__footer disable-link"}>
         <Link to={`/order/${area.id}/${item.id}`} className="Place__order">
           Оплатить {price}
         </Link>
