@@ -128,6 +128,15 @@ const App = () => {
 	const [ orderStatuses, setOrderStatuses ] = useState(JSON.parse((localStorage.getItem('orderStatuses') || 'null')) || {});
 	const [ order, setOrder ] = useState(JSON.parse((localStorage.getItem('orders') || 'null')) || {});
 
+	function setOrderStatus(orderId, status){
+		const nextStatuses = {...orderStatuses};
+
+		nextStatuses[orderId] = status;
+
+		setOrderStatuses(nextStatuses);
+		localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
+	}
+	
 	return (
 		<Router>
 			<Switch>
@@ -139,12 +148,7 @@ const App = () => {
 						foodAreas={FOOD_AREAS}
 						order={order}
 						setActiveOrder={({ itemId }) => {
-							const nextStatuses = {...orderStatuses};
-
-							nextStatuses[itemId] = 'ACTIVE';
-
-							setOrderStatuses(nextStatuses);
-							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
+							setOrderStatus(itemId, 'ACTIVE');
 						}}
 					/>
 				</Route>
@@ -163,20 +167,10 @@ const App = () => {
 						orderStatuses={orderStatuses}
 						foodAreas={FOOD_AREAS}
 						setFinishedOrder={({ itemId }) => {
-							const nextStatuses = {...orderStatuses};
-
-							nextStatuses[itemId] = 'CANCEL';
-
-							setOrderStatuses(nextStatuses);
-							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
+							setOrderStatus(itemId, 'CANCEL');
 						}}
 						setActiveOrder={({ itemId }) => {
-							const nextStatuses = {...orderStatuses};
-
-							nextStatuses[itemId] = 'ACTIVE';
-
-							setOrderStatuses(nextStatuses);
-							localStorage.setItem('orderStatuses', JSON.stringify(nextStatuses));
+							setOrderStatus(itemId, 'ACTIVE');
 						}}
 					/>
 				</Route>
