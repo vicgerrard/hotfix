@@ -218,7 +218,6 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									console.log(serialized);
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
@@ -253,7 +252,6 @@ const App = () => {
 									}
 
 									const serialized = JSON.stringify(updatedOrder);
-									console.log(serialized);
 									localStorage.setItem('orders', serialized);
 									localStorage.setItem('orderStatuses', JSON.stringify(nextOrderStatuses));
 
