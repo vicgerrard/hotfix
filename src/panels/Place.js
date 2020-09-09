@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, {useMemo, useState} from 'react';
 import { Link } from 'react-router-dom';
 import accounting from 'accounting';
 // import PropTypes from 'prop-types';
@@ -8,6 +8,7 @@ import './place.css';
 
 
 const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) => {
+  const [orderHasItems, setOrderHasItems] = useState(false);
   const price = useMemo(() => {
     const foodIds = new Set((item.foods || []).map(item => item.id));
 
@@ -16,19 +17,22 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
         const { item: { id }} = value;
 
         return foodIds.has(id);
-      })
-      .reduce((result, value) => {
-        const { count, item: { price }} = value;
+      });
+    setOrderHasItems(result.length > 0);
+    const totalAmount = result
+        .reduce((result, value) => {
+          const {count, item: {price}} = value;
 
-        return result + parseInt(price) * parseInt(count);
-      }, 0);
+          return result + parseInt(price) * parseInt(count);
+        }, 0);
 
-    return accounting.formatNumber(result, 0, ' ');
+    return accounting.formatNumber(totalAmount, 0, ' ');
   }, [ order, item ]);
 
     // Solution for brutal button.click() autotest
     function placeOrder(e) {
-        if (!Object.values(order).length) {
+      // price == 0 condition is not used cause of possible free products in menu sometime
+        if (!orderHasItems) {
           e.preventDefault();
         }
     }
@@ -108,7 +112,7 @@ const Place = ({ item, order, onIncrementPosition, onDecrementPosition, area }) 
         )))}
       </ul>
       <footer className="Place__footer">
-        <Link to={`/basket/${area.id}/${item.id}`} className={Object.values(order).length ? "Place__order" : "Place__order disable-link"} onClick={placeOrder}>
+        <Link to={`/basket/${area.id}/${item.id}`} className={orderHasItems ? "Place__order" : "Place__order disable-link"} onClick={placeOrder}>
           Оформить заказ ({price})
         </Link>
       </footer>

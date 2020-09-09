@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import accounting from 'accounting';
 
@@ -8,14 +8,31 @@ import edit from '../img/edit.svg';
 import './place.css'
 
 
-const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster, time, selfService, setFaster, setTime, setSelfService }) => {
+const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order}) => {
 
   const area = foodAreas.filter(area => area.id === areaId)[0];
   const item = area.items.filter(item => item.id === itemId)[0];
+  const [parameters, setParameters] = useState(JSON.parse(localStorage.getItem(`${itemId}Parameters`) || 'null') || {faster: false, time: '', selfService: false});
+
+  function saveParameters(parameters) {
+    setParameters(parameters);
+    localStorage.setItem(`${itemId}Parameters`, JSON.stringify(parameters));
+  }
+
+  function setFaster(faster) {
+    saveParameters({...parameters, faster});
+  }
+
+  function setTime(time){
+    saveParameters({...parameters, time});
+  }
+
+  function setSelfService(selfService){
+    saveParameters({...parameters, selfService});
+  }
 
   const [ price, products ] = useMemo(() => {
     const foodIds = new Set((item.foods || []).map(item => item.id));
-
     const products = Object.values(order)
       .filter((value) => {
         const { item: { id }} = value;
@@ -31,7 +48,6 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster
 
     return [ accounting.formatNumber(result, 0, ' '), products ];
   }, [ order, item ]);
-
   return (
     <div className="Place">
       <header className="Place__header">
@@ -106,9 +122,9 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster
         <div className="Place__choice-item">
           <span>Как можно быстрее</span>
           <Checkbox
-            checked={faster}
+            checked={parameters.faster}
             onToggle={() => {
-              if (faster) {
+              if (parameters.faster) {
                 setFaster(false);
               } else {
                 setTime('');
@@ -121,7 +137,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster
           <span>Назначить</span>
           <input
             type="time"
-            value={time}
+            value={parameters.time}
             onFocus={() => {
               setFaster(false);
             }}
@@ -130,7 +146,7 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster
               setTime(event.target.value);
             }}
             onBlur={() => {
-              if (time) {
+              if (parameters.time) {
                 setFaster(false);
               }
             }}
@@ -138,11 +154,11 @@ const Basket = ({ match: { params: { areaId, itemId }}, foodAreas, order, faster
         </div>
         <div className="Place__choice-item">
           <h3>С собой</h3>
-          <Checkbox checked={selfService} onToggle={() => setSelfService(!selfService)} />
+          <Checkbox checked={parameters.selfService} onToggle={() => setSelfService(!parameters.selfService)} />
         </div>
         <div className="Place__choice-item">
           <h3>На месте</h3>
-          <Checkbox checked={!selfService} onToggle={() => setSelfService(!setSelfService)} />
+          <Checkbox checked={!parameters.selfService} onToggle={() => setSelfService(!parameters.setSelfService)} />
         </div>
       </div>
       <footer className={"Place__footer"}>
